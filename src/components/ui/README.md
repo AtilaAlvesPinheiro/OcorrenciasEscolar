@@ -1,0 +1,1 @@
+# Componentes UI\n\nOs componentes UI devem ser gerados usando o shadcn CLI:\n\nnpx shadcn@latest add button card input label select dialog dropdown-menu table badge avatar sheet textarea\n\nOu copie manualmente os componentes de: https://ui.shadcn.com/docs/components\n
