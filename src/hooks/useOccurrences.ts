@@ -103,11 +103,13 @@ export function useCreateOccurrence() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Não autenticado');
       const occurrenceData = { ...input, user_id: user.id };
-      const { data, error } = await supabase
-        .from('occurrences')
-        .insert(occurrenceData as any)
+      
+      // ✅ CORREÇÃO: Cast do from() para any
+      const { data, error } = await (supabase.from('occurrences') as any)
+        .insert(occurrenceData)
         .select()
         .single();
+        
       if (error) throw error;
       return data as Occurrence;
     },
@@ -127,12 +129,13 @@ export function useUpdateOccurrence() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, ...input }: Omit<Occurrence, 'user_id' | 'created_at' | 'updated_at'>) => {
-      const { data, error } = await (supabase
-        .from('occurrences')
-        .update(input) as any)
+      // ✅ CORREÇÃO: Cast do from() para any
+      const { data, error } = await (supabase.from('occurrences') as any)
+        .update(input)
         .eq('id', id)
         .select()
         .single();
+        
       if (error) throw error;
       return data as Occurrence;
     },
