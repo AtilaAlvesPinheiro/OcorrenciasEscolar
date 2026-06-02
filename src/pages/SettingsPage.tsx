@@ -20,24 +20,26 @@ export function SettingsPage() {
   }, [profile]);
 
   const saveProfile = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!user) return;
-    setSavingProfile(true);
-    try {
-      const { error: authError } = await supabase.auth.updateUser({ data: { full_name: fullName } });
-      if (authError) throw authError;
-      const { error } = await (supabase
-        .from('profiles')
-        .update({ full_name: fullName }) as any)
-        .eq('id', user.id);
-      if (error) throw error;
-      toast.success('Dados atualizados com sucesso!');
-    } catch (error: any) {
-      toast.error(error?.message ?? 'Falha ao atualizar perfil');
-    } finally {
-      setSavingProfile(false);
-    }
-  };
+  event.preventDefault();
+  if (!user) return;
+  setSavingProfile(true);
+  try {
+    const { error: authError } = await supabase.auth.updateUser({ data: { full_name: fullName } });
+    if (authError) throw authError;
+    
+    // ✅ CORREÇÃO: Cast do from() para any
+    const { error } = await (supabase.from('profiles') as any)
+      .update({ full_name: fullName })
+      .eq('id', user.id);
+      
+    if (error) throw error;
+    toast.success('Dados atualizados com sucesso!');
+  } catch (error: any) {
+    toast.error(error?.message ?? 'Falha ao atualizar perfil');
+  } finally {
+    setSavingProfile(false);
+  }
+};
 
   const changePassword = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
